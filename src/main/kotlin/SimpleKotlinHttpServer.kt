@@ -1,4 +1,4 @@
-import utils.Constants.Companion.PORT
+import utils.Logger
 import java.io.IOException
 import java.net.InetAddress
 import java.net.InetSocketAddress
@@ -9,18 +9,20 @@ import kotlin.system.exitProcess
  * @author TomohiroSano
  */
 
+const val PORT: Int = 8000
+val logger: Logger = Logger("parent")
 
 fun main(args: Array<String>) {
     try {
         ServerSocket().use { serverSocket ->
             serverSocket.bind(InetSocketAddress(InetAddress.getLoopbackAddress(), PORT))
-            println("listening HTTP request on ${serverSocket.inetAddress.hostName} port ${serverSocket.localPort} ...")
+            logger.info("listening HTTP request on ${serverSocket.inetAddress.hostName} port ${serverSocket.localPort} ...")
             while (true) {
                 respondToClient(serverSocket)
             }
         }
     } catch (e: Exception) {
-        println("Something wrong occurred. Killing this HTTP server...")
+        logger.error("Something wrong occurred. Killing this HTTP server...")
         exitProcess(-1)
     }
 }
@@ -32,8 +34,7 @@ private fun respondToClient(serverSocket: ServerSocket) {
             writer.write("Hello Request!")
         }
     } catch (e: IOException) {
-        // TODO create logger class
-        println("Could not respond to the client.")
+        logger.error("Could not respond to the client.")
         e.printStackTrace()
     }
 }
