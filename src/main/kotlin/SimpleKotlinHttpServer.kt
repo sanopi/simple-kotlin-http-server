@@ -9,8 +9,9 @@ import kotlin.system.exitProcess
  * @author TomohiroSano
  */
 
-const val PORT: Int = 8000
-val logger: Logger = Logger("parent")
+private const val PORT: Int = 8000
+private const val LF: String = "\n"
+val logger: Logger = Logger("Root")
 
 fun main(args: Array<String>) {
     try {
@@ -28,10 +29,15 @@ fun main(args: Array<String>) {
 }
 
 private fun respondToClient(serverSocket: ServerSocket) {
-    // OutputStream and Socket is also closed by closing BufferedWriter.
     try {
-        serverSocket.accept().getOutputStream().bufferedWriter().use { writer ->
-            writer.write("Hello Request!")
+        serverSocket.accept().use { socket ->
+            socket.getInputStream().bufferedReader().use { reader ->
+                socket.getOutputStream().bufferedWriter().use { writer ->
+                    while (reader.ready()) {
+                        writer.write(reader.readLine() + LF)
+                    }
+                }
+            }
         }
     } catch (e: IOException) {
         logger.error("Could not respond to the client.")
