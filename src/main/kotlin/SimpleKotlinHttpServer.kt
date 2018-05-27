@@ -10,7 +10,7 @@ import kotlin.system.exitProcess
  */
 
 private const val PORT: Int = 8000
-private const val LF: String = "\n"
+private const val CRLF: String = "\r\n"
 val logger: Logger = Logger("Root")
 
 fun main(args: Array<String>) {
@@ -34,7 +34,7 @@ private fun respondToClient(serverSocket: ServerSocket) {
             socket.getInputStream().bufferedReader().use { reader ->
                 socket.getOutputStream().bufferedWriter().use { writer ->
                     while (reader.ready()) {
-                        writer.write(reader.readLine() + LF)
+                        writer.write(reader.readLine() + CRLF)
                     }
                 }
             }
