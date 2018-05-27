@@ -1,3 +1,4 @@
+.DS_Store
 .idea/
 out/
 simple-kotlin-http-server.iml
