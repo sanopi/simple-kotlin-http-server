@@ -1,7 +1,8 @@
 import http.HeaderFieldName
 import http.HttpResponse
 import http.HttpResponseStatus
-import utils.Constants.Companion.CRLF
+import http.MediaType
+import utils.Constants.Companion.CHARACTER_SET
 import utils.Logger
 import java.io.IOException
 import java.net.ServerSocket
@@ -34,18 +35,17 @@ fun main(args: Array<String>) {
 private fun respondToClient(serverSocket: ServerSocket) {
     try {
         serverSocket.accept().use { socket ->
-            socket.getInputStream().bufferedReader().use { reader ->
+//            socket.getInputStream().bufferedReader().use { reader ->
                 socket.getOutputStream().bufferedWriter().use { writer ->
-                    val bodyBuilder = StringBuilder()
-                    while (reader.ready()) {
-                        bodyBuilder.append(reader.readLine() + CRLF)
-                    }
-                    val response = HttpResponse(HttpResponseStatus.OK, bodyBuilder.toString())
+                    val body = "<h1>Hello, Client<h1/>"
+                    val response = HttpResponse(HttpResponseStatus.OK, body)
                     val date = ZonedDateTime.now(ZoneOffset.UTC)
                     response.addHeaderField(HeaderFieldName.DATE, date.format(DateTimeFormatter.RFC_1123_DATE_TIME))
+                    response.addHeaderField(HeaderFieldName.CONTENT_TYPE, MediaType.HTML.toString())
+                    response.addHeaderField(HeaderFieldName.CONTENT_LENGTH, body.toByteArray(charset(CHARACTER_SET)).size.toString())
                     writer.write(response.constructResponse())
                 }
-            }
+//            }
         }
     } catch (e: IOException) {
         logger.error("Could not respond to the client: ${e.message}")
