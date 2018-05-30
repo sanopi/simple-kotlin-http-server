@@ -12,5 +12,7 @@ class HttpResponseHeaderField(val fieldName: HeaderFieldName, private val fieldV
 
 enum class HeaderFieldName(val token: String) {
 
-    DATE("Date");
+    DATE("Date"),
+    CONTENT_TYPE("Content-Type"),
+    CONTENT_LENGTH("Content-Length");
 }
