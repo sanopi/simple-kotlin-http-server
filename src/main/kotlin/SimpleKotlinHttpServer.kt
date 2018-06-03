@@ -6,9 +6,6 @@ import utils.Constants.Companion.CHARACTER_SET
 import utils.Logger
 import java.io.IOException
 import java.net.ServerSocket
-import java.time.ZoneOffset
-import java.time.ZonedDateTime
-import java.time.format.DateTimeFormatter
 import kotlin.system.exitProcess
 
 /**
@@ -39,11 +36,9 @@ private fun respondToClient(serverSocket: ServerSocket) {
                 socket.getOutputStream().bufferedWriter().use { writer ->
                     val body = "<h1>Hello, Client<h1/>"
                     val response = HttpResponse(HttpResponseStatus.OK, body)
-                    val date = ZonedDateTime.now(ZoneOffset.UTC)
-                    response.addHeaderField(HeaderFieldName.DATE, date.format(DateTimeFormatter.RFC_1123_DATE_TIME))
                     response.addHeaderField(HeaderFieldName.CONTENT_TYPE, MediaType.HTML.toString())
                     response.addHeaderField(HeaderFieldName.CONTENT_LENGTH, body.toByteArray(charset(CHARACTER_SET)).size.toString())
-                    writer.write(response.constructResponse())
+                    writer.write(response.buildResponse())
                 }
 //            }
         }
